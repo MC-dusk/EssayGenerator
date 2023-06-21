@@ -1,4 +1,5 @@
 ﻿#include "EssayGenerator.h"
+#include <ctime>
 
 // myMFCDlg.cpp: 实现文件
 //
@@ -69,6 +70,7 @@ BEGIN_MESSAGE_MAP(CmyMFCDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON1, &CmyMFCDlg::OnBnClickedButton1)
 	ON_BN_CLICKED(IDCANCEL, &CmyMFCDlg::OnBnClickedCancel)
 	ON_BN_CLICKED(IDC_BUTTON2, &CmyMFCDlg::OnBnClickedButton2)
+	ON_BN_CLICKED(IDC_BUTTON3, &CmyMFCDlg::OnBnClickedButton3)
 END_MESSAGE_MAP()
 
 
@@ -111,9 +113,9 @@ BOOL CmyMFCDlg::OnInitDialog()
 	// 初始化编辑框的值
 	SetDlgItemText(IDC_EDIT1, _T("就业"));
 	SetDlgItemText(IDC_EDIT2, _T("500"));
-	SetDlgItemText(IDC_EDIT3, _T("在上方分别输入主题和字数"));
+	SetDlgItemText(IDC_EDIT3, _T("使用指南：\r\n在上方分别输入主题和字数，已经置入默认值，可以直接点击生成\r\n点击复制，复制到剪贴板\r\n点击保存，保存markdown文件到程序所在路径"));
 
-	SetWindowText(L"大作业");
+	//SetWindowText(L"DZY");
 
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
@@ -229,17 +231,6 @@ void ProcessInput(const CString& strInput1, const CString& strInput2, CString& s
 	outTemp += newline;
 	strOutput = outTemp.c_str();
 
-	return; // 先不管下面
-	//cout << endl << "是否保存？若要保存输入文件名，否则直接回车：";
-	//wstring fileName;
-	//getline(wcin, fileName);
-	//if (fileName.empty()) return;
-	//fileName += L".md";
-	//ofstream outfile;
-	//outfile.open(fileName.c_str());
-	//outfile << "# " << title << "\n\n" << beginning << "\n\n" << body << "\n\n" << ending << endl;
-	//outfile.close();
-
 	return; // 运行结束
 }
 
@@ -298,4 +289,34 @@ void CmyMFCDlg::OnBnClickedButton2()
 		}
 	}
 	CloseClipboard();
+}
+
+
+void CmyMFCDlg::OnBnClickedButton3()
+{
+	// TODO: 在此添加控件通知处理程序代码
+
+	std::time_t timestamp = std::time(nullptr);
+	wstring fileName = L"主题：" + CStringW(m_strInput1) + L"，字数：" + CStringW(m_strInput2) + L"，时间：";
+	fileName += to_wstring(timestamp);
+	if (fileName.empty()) return;
+	fileName += L".md";
+
+	//ofstream outfile; // 不用wofstream是不行的，但如果用了，前面string就都得改wstring
+	//outfile.open(fileName.c_str());
+	//int len = m_strOutput.GetLength()*sizeof(wchar_t);
+	//string out((char*)m_strOutput.GetString(), len);
+	//outfile.write(out.c_str(), len);
+	//outfile.close();
+
+	ofstream outfile;
+	outfile.open(fileName.c_str(), ios::binary); // 必须二进制模式，否则自动补\r导致双重换行
+	CStringA out(m_strOutput);
+	outfile.write(out, out.GetLength());
+	outfile.close();
+
+	//CFile outfile; // MFC的类，写入访问失败，不知道为什么
+	//outfile.Open(fileName.c_str(), CFile::modeCreate | CFile::typeUnicode);
+	//outfile.Write(m_strOutput, m_strOutput.GetLength());
+	//outfile.Close();
 }
