@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "EssayGenerator.h"
 
 int EssayGenerator::get_random_num(unsigned long total)
@@ -132,7 +132,7 @@ bool EssayGenerator::replace_verb_noun(string& str)
     for (size_t i = 0; i < random_num; i++)
     {
         vn += get_verb() + get_noun();
-        if (i != random_num - 1) vn += "，"; // 如果不是最后一个，就加逗号分隔
+        if (i != random_num - 1) vn += u8"、"; // 如果不是最后一个，就加逗号分隔；u8显式指定utf8编码，便于后续统一处理
     }
     str.replace(step, 2, vn);
     return true;

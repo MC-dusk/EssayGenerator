@@ -1,4 +1,5 @@
 ﻿#include "EssayGenerator.h"
+//#include "gbk2utf8.h"
 
 // myMFCDlg.h: 头文件
 //

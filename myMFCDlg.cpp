@@ -1,4 +1,4 @@
-﻿#include "EssayGenerator.h"
+﻿//#include "EssayGenerator.h"
 #include <ctime>
 
 // myMFCDlg.cpp: 实现文件
@@ -14,6 +14,7 @@
 #define new DEBUG_NEW
 #endif
 
+#include "gbk2utf8.h" // 这一条include不能放前面，只能放后面，也不能放在头文件，不然会报link2005和link1169重定义错误，很坑，原理不明
 
 // 用于应用程序“关于”菜单项的 CAboutDlg 对话框
 
@@ -187,7 +188,7 @@ void ProcessInput(const CString& strInput1, const CString& strInput2, CString& s
 		strOutput = generator.error(1).c_str();
 		return;
 	}
-	string theme1 = CStringA(strInput1); // 读取命令行参数
+	string theme1 = GbkToUtf8(CStringA(strInput1)); // 读取主题输入，gbk转utf8
 	int essay_num1 = _ttoi(strInput2);
 	if (essay_num1 < 300)
 	{
@@ -229,7 +230,8 @@ void ProcessInput(const CString& strInput1, const CString& strInput2, CString& s
 	}
 	outTemp += ending;
 	outTemp += newline;
-	strOutput = outTemp.c_str();
+
+	strOutput = Utf8ToGbk(outTemp.c_str()).c_str(); // string类型的输出，utf8转gbk，手动转char*类型，再自动转CString
 
 	return; // 运行结束
 }

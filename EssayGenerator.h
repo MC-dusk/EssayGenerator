@@ -1,3 +1,5 @@
+#pragma once
+
 // 文章生成器，根据指定主题和字数随机拼凑文章
 #ifndef GENER
 #define GENER
